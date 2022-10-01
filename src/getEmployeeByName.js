@@ -5,10 +5,10 @@ const local = data.employees;
 function getEmployeeByName(employeeName) {
   if (!employeeName) return {};
   const clt = local.filter((el) =>
-    (el.firstName === employeeName) || el.lastName === employeeName);
+    (el.firstName === employeeName) || (el.lastName === employeeName));
 
   return clt[0];
 }
 
-console.log(getEmployeeByName('Bethea'));
+// console.log(getEmployeeByName('Wishart'));
 module.exports = getEmployeeByName;
