@@ -7,24 +7,19 @@ const isManager = (id) =>
     .reduce((el1, el2) => el1.concat(el2))
     .filter((item, pos, arr) => arr.indexOf(item) === pos)
     .includes(id); // includes cai muito melhor e mais rápido, neste caso.
-// .some((el) => el === id);
-
-// console.log(isManager('0e7b460e-acf4-4e17-bcb3-ee472265db83'));
 
 const getRelatedEmployees = (managerId) => {
   const mapear = local.map((el) => el.managers)
     .reduce((el1, el2) => el1.concat(el2))
     .filter((item, pos, arr) => arr.indexOf(item) === pos);
-  const verificar = () => {
-    try {
-      if (mapear.includes(managerId) === false) {
-        throw new
-        Error(/^O id inserido não é de uma pessoa colaboradora gerente!$/);
-      }
-    } catch (erro) { return erro.message; }
-  };
-  return verificar();
+  const empregados = local.reduce((final, atual) => {
+    if (atual.managers.includes(managerId)) {
+      final.push(atual);
+    } return final;
+  }, [])
+    .map((el) => `${el.firstName} ${el.lastName}`);
+  return empregados;
 };
-// console.log(getRelatedEmployees('4b40a139-d4dc-4f09-822d-ec25e819a5ad'));
+console.log(getRelatedEmployees('9e7d4524-363c-416a-8759-8aa7e50c0992'));
 
 module.exports = { isManager, getRelatedEmployees };
