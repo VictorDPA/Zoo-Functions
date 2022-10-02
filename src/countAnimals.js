@@ -18,5 +18,5 @@ function countAnimals(animal) {
     .filter((gender) => gender.sex === sex).length;
   return genero;
 }
-console.log(countAnimals({ specie: 'elephants', sex: 'male' }));
+
 module.exports = countAnimals;
