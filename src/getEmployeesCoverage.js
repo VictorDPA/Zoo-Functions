@@ -1,26 +1,36 @@
+const { species } = require('../data/zoo_data');
 const data = require('../data/zoo_data');
 
 const local = data.employees;
 
-function getEmployeesCoverage(search) {
-  if (!search) return local;
-  const { name, id } = search;
-  const clt = local.find((pessoa) =>
-    (pessoa.lastName || pessoa.firstName) === name || (pessoa.id === id));
-  const obj = {
-    id: clt.id,
-    fullName: `${clt.firstName} ${clt.lastName}`,
-    species: clt.responsibleFor,
-  }; return obj;
+function obj(arr) {
+  return {
+    id: arr.id,
+    fullName: `${arr.firstName} ${arr.lastName}`,
+    species: species.filter((el, _) => (arr.responsibleFor.includes(species[_].id)))
+      .map((a) => a.name),
+    locations: species.filter((el, _) => (arr.responsibleFor.includes(species[_].id)))
+      .map((a) => a.location),
+  };
 }
 
-console.log(getEmployeesCoverage({ id: 'c1f50212-35a6-4ecd-8223-f835538526c2' }));
+function getEmployeesCoverage(search) {
+  if (!search) return obj(local);
+  const { name, id } = search;
+  const clt = local.find((pers) =>
+    (pers.lastName === name || pers.firstName === name || pers.id === id));
+  return obj(clt);
+}
+
+console.log((getEmployeesCoverage({ name: 'Spry' })));
 module.exports = getEmployeesCoverage;
 
-// .reduce((final, inicial, i) => {
-//   console.log(anm.indexOf(responsibleFor[inicial]));
-//   if (inicial.id === anm.indexOf(responsibleFor[i])) {
-//     final.push(inicial[i].id);
-//   }
-//   return final;
-// }, []);
+// const obj = {
+//   id: clt.id,
+//   fullName: `${clt.firstName} ${clt.lastName}`,
+//   species: species.filter((el, _) => (clt.responsibleFor.includes(species[_].id)))
+//     .map((a) => a.name),
+//   locations: species.filter((el, _) => (clt.responsibleFor.includes(species[_].id)))
+//     .map((a) => a.location),
+// };
+// return obj;
