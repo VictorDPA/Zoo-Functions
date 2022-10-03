@@ -20,7 +20,7 @@ function whenNull() {
   const pos = local.reduce((final, arroz) => ([...final, obj(arroz)]), []);
   return pos;
 }
-console.log(whenNull());
+
 function getEmployeesCoverage(search) {
   if (!search) return whenNull();
   const { name, id } = search;
