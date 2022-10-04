@@ -9,7 +9,7 @@ function countAnimals(animal) {
   const { specie, sex } = animal;
   if (!sex) {
     const nome = species.filter(({ name }) => (name === specie))
-      .map(({ residents }) => residents.length).at();
+      .map(({ residents }) => residents.length)[0];
     return nome;
   }
   const genero = species.filter(({ name }) => (name === specie))
