@@ -1,36 +1,22 @@
-const { species } = require('../data/zoo_data');
-const data = require('../data/zoo_data');
+const { species, employees } = require('../data/zoo_data');
 
-const local = data.employees;
-const ids = local.map((el) => el.id);
-const nomes = local.map((el) => `${el.firstName} ${el.lastName}`);
+const bigManager = (person, type) => species.filter(({ id }) =>
+  (person.responsibleFor.includes(id))).map((found) => found[type]);
 
-function obj(arr) {
-  return {
-    id: arr.id,
-    fullName: `${arr.firstName} ${arr.lastName}`,
-    species: species.filter((el, _) =>
-      (arr.responsibleFor.includes(species[_].id))).map((a) => a.name),
-    locations: species.filter((el, _) =>
-      (arr.responsibleFor.includes(species[_].id))).map((a) => a.location),
-  };
-}
+const obj = (person) => ({ id: person.id,
+  fullName: `${person.firstName} ${person.lastName}`,
+  species: bigManager(person, 'name'),
+  locations: bigManager(person, 'location') });
 
-function whenNull() {
-  const pos = local.reduce((final, arroz) => ([...final, obj(arroz)]), []);
-  return pos;
-}
+const whenNull = () => employees.reduce((array, employee) =>
+  ([...array, obj(employee)]), []);
 
 function getEmployeesCoverage(search) {
   if (!search) return whenNull();
-  const { name, id } = search;
-  if (!ids.includes(id)) {
-    throw new Error('Informações inválidas');
-  }
-  const clt = local.find((pers) =>
-    (pers.lastName === name || pers.firstName === name || pers.id === id));
-  if (nomes.includes(name)) return obj(clt);
+  const { name } = search;
+  const clt = employees.find(({ lastName, firstName, id }) =>
+    (lastName === name || firstName === name || id === search.id));
+  if (!clt) throw new Error('Informações inválidas');
   return obj(clt);
 }
-// console.log((getEmployeesCoverage({ id: 'c1f50212-35a6-4ecd-8223-f835538526c2' })));
 module.exports = getEmployeesCoverage;

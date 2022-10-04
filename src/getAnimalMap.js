@@ -2,58 +2,62 @@ const { species } = require('../data/zoo_data');
 const data = require('../data/zoo_data');
 
 function bySexAndOrder(gender) {
-  const pos = species.map((el) => el.location)
-    .filter((el, index, arr) => arr.indexOf(el) === index)
-    .reduce((fim, ini) => ({ ...fim,
-      [ini]:
-  species.filter((proj) => proj.location.includes(ini))
-    .map((tipo) => ({ [tipo.name]: species.filter((res) =>
-      res.name === tipo.name).map((k) => k.residents).flat(1)
-      .filter((again) => again.sex === gender)
-      .map((l) => l.name)
-      .sort(),
-    })),
-    }), {});
-  return pos;
-}
-function bySex(gender) {
-  const pos = species.map((el) => el.location)
-    .filter((el, ind, arr) => arr.indexOf(el) === ind)
-    .reduce((fim, ini) => ({ ...fim,
-      [ini]: species.filter((proj) => proj.location.includes(ini))
-        .map((tipo) => ({ [tipo.name]: species.filter((res) => res.name === tipo.name)
-          .map((k) => k.residents).flat(1).filter((again) => again.sex === gender)
-          .map((l) => l.name),
-        })),
-    }), {});
-  return pos;
-}
-function fullMapWithNamesAndSorted() {
-  const pos = species.map((el) => el.location)
-    .filter((el, ind, arr) => arr.indexOf(el) === ind).reduce((fim, ini) => ({ ...fim,
-      [ini]: species.filter((proj) => proj.location.includes(ini)).map((tipo) =>
-        ({ [tipo.name]: species.filter((res) => res.name === tipo.name)
-          .map((k) => k.residents).flat(1).map((l) => l.name)
+  const position = species.map(({ location }) => location)
+    .filter((local, index, array) => array.indexOf(local) === index)
+    .reduce((objeto, bussola) => ({ ...objeto,
+      [bussola]: species.filter(({ location }) => location.includes(bussola)).map((tipo) =>
+        ({ [tipo.name]: species.filter((residente) =>
+          residente.name === tipo.name)
+          .map(({ residents }) => residents).flat(1)
+          .filter(({ sex }) => sex === gender)
+          .map(({ name }) => name)
           .sort() })),
     }), {});
-  return pos;
+  return position;
 }
-
-function fullMapWithNames() {
-  const pos = species.map((el) => el.location)
-    .filter((el, ind, arr) => arr.indexOf(el) === ind).reduce((fim, ini) => ({ ...fim,
-      [ini]: species.filter((proj) => proj.location.includes(ini))
-        .map((tipo) => ({ [tipo.name]: species.filter((res) => res.name === tipo.name)
-          .map((k) => k.residents).flat(1).map((l) => l.name) })),
+function bySex(gender) {
+  const position = species.map(({ location }) => location)
+    .filter((local, index, array) => array.indexOf(local) === index)
+    .reduce((objeto, bussola) => ({ ...objeto,
+      [bussola]: species.filter(({ location }) => location.includes(bussola)).map((tipo) =>
+        ({ [tipo.name]: species.filter((residente) =>
+          residente.name === tipo.name)
+          .map(({ residents }) => residents).flat(1)
+          .filter(({ sex }) => sex === gender)
+          .map(({ name }) => name) })),
     }), {});
-  return pos;
+  return position;
 }
-console.log(fullMapWithNames());
+function fullMapWithNamesAndSorted() {
+  const position = species.map(({ location }) => location)
+    .filter((local, idx, array) => array.indexOf(local) === idx)
+    .reduce((objeto, nomes) => ({ ...objeto,
+      [nomes]: species.filter(({ location }) => location.includes(nomes)).map((tipo) =>
+        ({ [tipo.name]: species.filter((residente) => residente.name === tipo.name)
+          .map(({ residents }) => residents).flat(1)
+          .map(({ name }) => name)
+          .sort() })),
+    }), {});
+  return position;
+}
+function fullMapWithNames() {
+  const position = species.map(({ location }) => location)
+    .filter((local, index, arr) => arr.indexOf(local) === index)
+    .reduce((objeto, nomes) => ({ ...objeto,
+      [nomes]: species.filter(({ location }) => location.includes(nomes))
+        .map((tipo) => ({ [tipo.name]: species.filter((residentes) =>
+          residentes.name === tipo.name)
+          .map(({ residents }) => residents).flat(1)
+          .map(({ name }) => name) })),
+    }), {});
+  return position;
+}
 function fullMap() {
-  const pos = data.species.map((el) => el.location)
-    .filter((el, ind, arr) => arr.indexOf(el) === ind).reduce((a, b) => ({ ...a,
-      [b]: species.filter((proj) => proj.location.includes(b))
-        .map((loc) => loc.name),
+  const pos = data.species.map(({ location }) => location)
+    .filter((local, index, arr) => arr.indexOf(local) === index)
+    .reduce((obj, nome) => ({ ...obj,
+      [nome]: species.filter(({ location }) => location.includes(nome))
+        .map(({ name }) => name),
     }), {});
 
   return pos;

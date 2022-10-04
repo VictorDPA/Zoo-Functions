@@ -1,22 +1,22 @@
-const data = require('../data/zoo_data');
+const { employees } = require('../data/zoo_data');
 
-const local = data.employees;
+const bigManagers = employees.map(({ managers }) => managers)
+  .reduce((total, ids) => total.concat(ids))
+  .filter((item, position, arr) => arr.indexOf(item) === position);
 
-const isManager = (id) =>
-  local.map((el) => el.managers)
-    .reduce((el1, el2) => el1.concat(el2))
-    .filter((item, pos, arr) => arr.indexOf(item) === pos)
-    .includes(id); // includes cai muito melhor e mais rápido, neste caso.
+const isManager = (id) => bigManagers.includes(id); // includes cai muito melhor e mais rápido, neste caso.
 
 const getRelatedEmployees = (managerId) => {
-  const empregados = local.reduce((final, atual) => {
+  const empregados = employees.reduce((final, atual) => {
     if (atual.managers.includes(managerId)) {
       final.push(atual);
     } return final;
   }, [])
-    .map((el) => `${el.firstName} ${el.lastName}`);
+    .map(({ firstName, lastName }) => `${firstName} ${lastName}`);
+  if (!bigManagers.includes(managerId)) {
+    throw new Error('O id inserido não é de uma pessoa colaboradora gerente!');
+  }
   return empregados;
 };
-console.log(getRelatedEmployees('9e7d4524-363c-416a-8759-8aa7e50c0992'));
 
 module.exports = { isManager, getRelatedEmployees };

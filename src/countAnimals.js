@@ -1,20 +1,19 @@
-const data = require('../data/zoo_data');
-
-const local = data.species;
+const { species } = require('../data/zoo_data');
 
 function countAnimals(animal) {
-  const quant = local.map((el) => el.residents.length);
-  const nomes = local.map((el) => el.name)
-    .reduce((a, b, c) => ({ ...a, [b]: quant[c] }), {});
+  const quantidade = species.map(({ residents }) => residents.length);
+  const nomes = species.map(({ name }) => name)
+    .reduce((objeto, anim, idx) => ({ ...objeto,
+      [anim]: quantidade[idx] }), {});
   if (!animal) return nomes;
   const { specie, sex } = animal;
   if (!sex) {
-    const nome = local.filter((el, _, arr) => (el.name === specie))
-      .map((el) => el.residents.length).at();
+    const nome = species.filter(({ name }) => (name === specie))
+      .map(({ residents }) => residents.length).at();
     return nome;
   }
-  const genero = local.filter((el, _, arr) => (el.name === specie))
-    .map((el) => el.residents).flat()
+  const genero = species.filter(({ name }) => (name === specie))
+    .map(({ residents }) => residents).flat()
     .filter((gender) => gender.sex === sex).length;
   return genero;
 }
