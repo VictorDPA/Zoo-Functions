@@ -1,10 +1,15 @@
-const data = require('../data/zoo_data');
+const { species } = require('../data/zoo_data');
 
-const local = data.species;
+/**
+ * Returns a boolean indicating whether all residents of a given animal species are older than the specified age.
+ *
+ * @param {string} animal - The name of the animal species.
+ * @param {number} age - The age to compare against.
+ * @returns {boolean} - True if all residents of the species are older than the specified age, false otherwise.
+ */
+const getAnimalsOlderThan = (animal, age) => (
+  species.find((specie) => specie.name === animal)
+    .residents.every((resident) => resident.age > age)
+);
 
-function getAnimalsOlderThan(animal, age) {
-  return local.filter((el) => el.name === animal)
-    .map((el) => el.residents)
-    .every((el, i) => el[i].age > age);
-}
 module.exports = getAnimalsOlderThan;

@@ -1,5 +1,6 @@
-const getOpeningHours = require('../src/getOpeningHours');
+const { getOpeningHours, openForVisitation } = require('../src/getOpeningHours');
 
+const open = 'The zoo is open';
 const closed = 'The zoo is closed';
 describe('Testes da função getOpeningHours', () => {
   it('quando o parâmetro da função estiver vazio, retorna um objeto com todos os horários', () => {
@@ -15,7 +16,7 @@ describe('Testes da função getOpeningHours', () => {
     };
     expect(actual).toEqual(expected);
   });
-  it('quando chamado na segunda feira, espera-se que retorne o "The zoo is cloed"', () => {
+  it('quando chamado na segunda feira, espera-se que retorne o "The zoo is closed"', () => {
     const actual = getOpeningHours('Monday', '09:00-AM');
     expect(actual).toEqual(closed);
   });
@@ -34,16 +35,35 @@ describe('Testes da função getOpeningHours', () => {
   it('quando passado algo que não seja número na string de horário, retorna erro', () => {
     expect(() => getOpeningHours('Friday', 'dez:30-MA')).toThrow(new Error('The hour should represent a number'));
   });
-  it('quando chamado em qualquer outro dia da semana, dentro do horário de funcionamento, espera-se que retorne o "The zoo is cloed"', () => {
+  it('quando passado algo que não seja número na string de minutos, retorna erro', () => {
+    expect(() => getOpeningHours('Friday', '09:dez-MA')).toThrow(new Error('The minutes should represent a number'));
+  });
+  it('quando chamado em qualquer outro dia da semana, dentro do horário de funcionamento, espera-se que retorne o "The zoo is open"', () => {
     const actual = getOpeningHours('Wednesday', '11:00-AM');
+    expect(actual).toEqual(open);
+  });
+  it('quando chamado em qualquer outro dia da semana, fora do horário de funcionamento, espera-se que retorne o "The zoo is closed"', () => {
+    const actual = getOpeningHours('Wednesday', '07:00-AM');
     expect(actual).toEqual(closed);
   });
-  it('quando chamado em qualquer outro dia da semana, fora do horário de funcionamento, espera-se que retorne o "The zoo is cloed"', () => {
-    const actual = getOpeningHours('Wednesday', '12:00-AM');
+  it('quando chamado em qualquer outro dia da semana, dentro do horário de fechamento, na parte da tarde, espera-se que retorne o "The zoo is closed"', () => {
+    const actual = getOpeningHours('Wednesday', '06:00-PM');
     expect(actual).toEqual(closed);
   });
-  it('quando chamado em qualquer outro dia da semana, dentro do horário de fechamento, na parte da tarde, espera-se que retorne o "The zoo is cloed"', () => {
-    const actual = getOpeningHours('Wednesday', '05:00-PM');
+  it('quando chamado com horário válido no período da manhã, espera-se que retorne o "The zoo is open"', () => {
+    const actual = openForVisitation('10', 'AM', '8', '6');
+    expect(actual).toEqual(open);
+  });
+  it('quando chamado com horário válido no período da tarde, espera-se que retorne o "The zoo is open"', () => {
+    const actual = openForVisitation('2', 'PM', '8', '6');
+    expect(actual).toEqual(open);
+  });
+  it('quando chamado com horário inválido no período da manhã, espera-se que retorne o "The zoo is closed"', () => {
+    const actual = openForVisitation('7', 'AM', '8', '6');
+    expect(actual).toEqual(closed);
+  });
+  it('quando chamado com horário inválido no período da tarde, espera-se que retorne o "The zoo is closed"', () => {
+    const actual = openForVisitation('7', 'PM', '8', '6');
     expect(actual).toEqual(closed);
   });
 });

@@ -1,28 +1,28 @@
 const { species, hours } = require('../data/zoo_data');
 const data = require('../data/zoo_data');
 
-function todosDias() {
-  const dia = Object.keys(hours)
-    .reduce((object, horario) => ({ ...object,
-      [horario]: {
-        officeHour: `Open from ${hours[horario].open}am until ${hours[horario].close}pm`,
-        exhibition: species.filter(({ availability }) => availability.includes(horario))
-          .map(({ name }) => name),
-      } }), {});
-  dia.Monday.officeHour = 'CLOSED';
-  dia.Monday.exhibition = 'The zoo will be closed!';
-  return dia;
+const daysOfTheWeek = Object.keys(hours);
+const MondayExhibition = { officeHour: 'CLOSED', exhibition: 'The zoo will be closed!' };
+const animals = new Set(species.map(({ name }) => name));
+
+const openingHours = (open, closed) => `Open from ${open}am until ${closed}pm`;
+
+const exhibition = (day) => species.reduce((creatures, { name, availability }) => (
+  availability.includes(day) ? [...creatures, name] : creatures), []);
+
+const everyDay = () => daysOfTheWeek.reduce((object, day) => (
+  day !== 'Monday' ? { ...object,
+    [day]: {
+      officeHour: openingHours(hours[day].open, hours[day].close),
+      exhibition: exhibition(day) } }
+    : { ...object, [day]: MondayExhibition }), {});
+
+function getSchedule(schedule) {
+  if (!schedule) return everyDay();
+  if (daysOfTheWeek.includes(schedule)) return { [schedule]: everyDay()[schedule] };
+  if (!animals.has(schedule)) return everyDay();
+
+  return species.find(({ name }) => name === schedule).availability;
 }
 
-function getSchedule(scheduleTarget) {
-  if (!scheduleTarget) return todosDias();
-  if (Object.keys(hours)
-    .includes(scheduleTarget)) return { [scheduleTarget]: todosDias()[scheduleTarget] };
-  const nomesAnimais = species.map(({ name }) => name);
-  if (!nomesAnimais.includes(scheduleTarget)) return todosDias();
-  const exhibition = species.filter(({ name }) => name === scheduleTarget)
-    .map(({ availability }) => availability).flat();
-  return exhibition;
-}
-console.log(getSchedule('Monday'));
 module.exports = getSchedule;

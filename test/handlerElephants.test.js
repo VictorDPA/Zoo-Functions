@@ -1,32 +1,86 @@
 const handlerElephants = require('../src/handlerElephants');
+const { species } = require('../data/zoo_data');
 
 describe('Testes da função HandlerElephants', () => {
-  it('sem parâmetros, a função handlerElephantsretorna uma undefined', () => {
-    expect(handlerElephants()).toBeUndefined();
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
-  it('retorna o número de elefantes caso o parâmetro seja count', () => {
-    const actual = handlerElephants('count');
-    const expected = 4;
-    expect(actual).toEqual(expected);
+
+  it('should return undefined if param is undefined', () => {
+    const result = handlerElephants(undefined);
+    expect(result).toBeUndefined();
   });
-  it('retorna um array com o nome de todos os elefantes, caso o parâmetro seja "names"', () => {
-    const actual = handlerElephants('names');
-    const expected = ['Ilana', 'Orval', 'Bea', 'Jefferson'];
-    expect(actual).toEqual(expected);
+
+  it('should return "Parâmetro inválido, é necessário uma string" if param is not a string', () => {
+    const result = handlerElephants(123);
+    expect(result).toBe('Parâmetro inválido, é necessário uma string');
   });
-  it('retorna a média das idades dos elefantes, caso o parâmetro seja "averageAge"', () => {
-    const actual = handlerElephants('averageAge');
-    expect(actual).toEqual(10.5);
+
+  it('should return undefined if elephants are not found in the species data', () => {
+    jest.spyOn(species, 'find').mockReturnValueOnce(undefined);
+    const result = handlerElephants('count');
+    expect(result).toBeUndefined();
   });
-  it('retorna a localização dos elefantes, caso o parâmetro seja "location"', () => {
-    const actual = handlerElephants('location');
-    const expected = 'NW';
-    expect(actual).toEqual(expected);
+  it('should return the location if param is "location"', () => {
+    const mockElephants = {
+      location: 'NW',
+    };
+    jest.spyOn(species, 'find').mockReturnValueOnce(mockElephants);
+    expect(handlerElephants('location')).toBe('NW');
   });
-  it('caso NÃO seja passado como parâmetro uma string, retorna a mensagem "Parâmetro inválido, é necessário uma string"', () => {
-    expect(handlerElephants(4)).toBe('Parâmetro inválido, é necessário uma string');
+  it('should return the count of residents if param is "count"', () => {
+    const mockElephants = {
+      residents: [
+        { name: 'Elephant 1' },
+        { name: 'Elephant 2' },
+        { name: 'Elephant 3' },
+      ],
+    };
+    jest.spyOn(species, 'find').mockReturnValueOnce(mockElephants);
+
+    const result = handlerElephants('count');
+    expect(result).toBe(3);
   });
-  it('caso NÃO seja passado um parâmetro válido, retorna null', () => {
-    expect(handlerElephants('sex')).toBeNull();
+
+  it('should return an array of names if param is "names"', () => {
+    const mockElephants = {
+      residents: [
+        { name: 'Elephant 1' },
+        { name: 'Elephant 2' },
+        { name: 'Elephant 3' },
+      ],
+    };
+    jest.spyOn(species, 'find').mockReturnValueOnce(mockElephants);
+
+    const result = handlerElephants('names');
+    expect(result).toEqual(['Elephant 1', 'Elephant 2', 'Elephant 3']);
+  });
+
+  it('should return the average age if param is "averageAge"', () => {
+    const mockElephants = {
+      residents: [
+        { name: 'Elephant 1', age: 10 },
+        { name: 'Elephant 2', age: 20 },
+        { name: 'Elephant 3', age: 30 },
+      ],
+    };
+    jest.spyOn(species, 'find').mockReturnValueOnce(mockElephants);
+
+    const result = handlerElephants('averageAge');
+    expect(result).toBe(20);
+  });
+
+  it('should return null for unknown params', () => {
+    const mockElephants = {
+      residents: [
+        { name: 'Elephant 1' },
+        { name: 'Elephant 2' },
+        { name: 'Elephant 3' },
+      ],
+    };
+    jest.spyOn(species, 'find').mockReturnValueOnce(mockElephants);
+
+    const result = handlerElephants('unknownParam');
+    expect(result).toBeNull();
   });
 });

@@ -1,12 +1,11 @@
-const data = require('../data/zoo_data');
+const { species } = require('../data/zoo_data');
 
-const local = data.species;
+const getSpeciesByIds = (...ID) => {
+  if (ID.length === 0) return [];
 
-function getSpeciesByIds(...ids) {
-  if (!ids) return [];
-  const check = ids;
-  const mapear = local.filter((el, _) => (el.id === check[_]) || (el.id === check[0]));
-  return mapear;
-}
+  const idsSet = new Set(ID);
+
+  return species.filter(({ id }) => idsSet.has(id));
+};
 
 module.exports = getSpeciesByIds;

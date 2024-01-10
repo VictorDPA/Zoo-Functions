@@ -1,22 +1,19 @@
 const { employees } = require('../data/zoo_data');
 
-const bigManagers = employees.map(({ managers }) => managers)
-  .reduce((total, ids) => total.concat(ids))
-  .filter((item, position, arr) => arr.indexOf(item) === position);
+const getManagers = new Set(employees.flatMap(({ managers }) => managers));
 
-const isManager = (id) => bigManagers.includes(id); // includes cai muito melhor e mais rápido, neste caso.
+const isManager = (id) => getManagers.has(id);
 
 const getRelatedEmployees = (managerId) => {
-  const empregados = employees.reduce((final, atual) => {
-    if (atual.managers.includes(managerId)) {
-      final.push(atual);
-    } return final;
-  }, [])
-    .map(({ firstName, lastName }) => `${firstName} ${lastName}`);
-  if (!bigManagers.includes(managerId)) {
+  if (!getManagers.has(managerId)) {
     throw new Error('O id inserido não é de uma pessoa colaboradora gerente!');
   }
-  return empregados;
+
+  return employees.reduce((final, { firstName, lastName, managers }) => (
+    managers.includes(managerId) ? [...final, `${firstName} ${lastName}`] : final
+  ), []);
 };
+
+console.log(getRelatedEmployees('0e7b460e-acf4-4e17-bcb3-ee472265db83'));
 
 module.exports = { isManager, getRelatedEmployees };
